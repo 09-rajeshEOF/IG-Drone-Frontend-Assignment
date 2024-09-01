@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rajesh's animated timeline</title>
+    <link rel="stylesheet" href="Stylesheet.css">
+</head>
+
+<body>
+    <div class="timeline-container">
+        <div class="drone" id="drone"></div>
+        <div class="timeline-line">
+            <div class="timeline-progress" id="timelineProgress"></div>
+        </div>
+        <div class="timeline-points" id="timelinePoints"></div>
+        <div class="timeline-dates" id="timelineDates"></div>
+        <div class="timeline-content" id="timelineContent">
+            <div class="timeline-image">
+                <img id="timelineImage" src="https://via.placeholder.com/100" alt="Timeline Image">
+            </div>
+            <div class="timeline-text">
+                <h2 id="timelineDate"></h2>
+                <p id="timelineText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const timelineData = [
+            { date: 'April 2018', content: "We are one of India's leading drone firms in providing end-to-end Drone Solutions.", image: "https://cdn.dribbble.com/users/988145/screenshots/3462363/drone-dribbb.gif" },
+            { date: 'April 2019', content: "Expanded our services to include aerial photography and mapping.", image: "https://cdn.dribbble.com/users/3898087/screenshots/15287542/media/c93f2eb7637752fe243b44c31397cc04.gif" },
+            { date: 'April 2020', content: "Launched AI-powered drone analytics platform.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMjjEK-ZzAZVpo5oZXqw8hIOhVLt4rwZIpIFat96YVFR0iYn4PmSIOBEbM9xt_Nu1IuUo&usqp=CAU" },
+            { date: 'April 2021', content: "Partnered with agriculture sector for crop monitoring solutions.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMU5KqCP3f9CecieIa-immEgL2Lt9qayVk1Q&s" },
+            { date: 'April 2022', content: "Introduced autonomous drone delivery systems.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbuz_OO65h6GyczXGwL5CFOCXQOt-2s2a1Pv0dzCd_EZtgEvb-7-PmeN6vZRjyYIp7gwU&usqp=CAU" },
+            { date: 'April 2023', content: "Developed drone swarm technology for large-scale operations.", image: "https://cdn.dribbble.com/users/826792/screenshots/2159792/elias-sern-grasp-drone.gif" },
+            { date: 'April 2024', content: "Pioneering urban air mobility solutions.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7S0j279reTPlINbZVPa7aX7sAuUjkgK36WCsce3-IruRzq9nyOcLe7PY0MZqqN_K41z8&usqp=CAU" }
+        ];
+
+        const timelinePoints = document.getElementById('timelinePoints');
+        const timelineDates = document.getElementById('timelineDates');
+        const timelineContent = document.getElementById('timelineContent');
+        const timelineDate = document.getElementById('timelineDate');
+        const timelineText = document.getElementById('timelineText');
+        const timelineImage = document.getElementById('timelineImage');
+        const drone = document.getElementById('drone');
+        const timelineProgress = document.getElementById('timelineProgress');
+
+        let currentIndex = 0;
+        let animationInterval;
+
+        function createTimeline() {
+            timelineData.forEach((item, index) => {
+                const point = document.createElement('div');
+                point.className = 'timeline-point';
+                point.addEventListener('click', () => {
+                    updateTimeline(index);
+                    resetAnimation(index);
+                });
+                timelinePoints.appendChild(point);
+
+                const date = document.createElement('div');
+                date.className = 'timeline-date';
+                date.textContent = item.date;
+                timelineDates.appendChild(date);
+            });
+
+            updateTimeline(0);
+        }
+
+        function updateTimeline(index) {
+            currentIndex = index;
+            const points = document.querySelectorAll('.timeline-point');
+            points.forEach((point, i) => {
+                point.classList.toggle('active', i === index);
+                point.classList.toggle('crossed', i < index);
+            });
+
+            timelineContent.classList.remove('active');
+            setTimeout(() => {
+                timelineDate.textContent = timelineData[index].date;
+                timelineText.textContent = timelineData[index].content;
+                timelineImage.src = timelineData[index].image;
+                timelineContent.classList.add('active');
+            }, 300);
+
+            moveDrone(index);
+            updateProgress(index);
+        }
+
+        function moveDrone(index) {
+            const point = document.querySelectorAll('.timeline-point')[index];
+            const rect = point.getBoundingClientRect();
+            const containerRect = timelinePoints.getBoundingClientRect();
+
+            drone.style.left = `${rect.left - containerRect.left - 40}px`;
+            drone.style.top = '-50px';
+        }
+
+        function updateProgress(index) {
+            const progress = (index / (timelineData.length - 1)) * 100;
+            timelineProgress.style.width = `${progress}%`;
+        }
+
+        function animateTimeline() {
+            if (currentIndex < timelineData.length - 1) {
+                currentIndex++;
+                updateTimeline(currentIndex);
+            } else {
+                resetAnimation(0);
+            }
+        }
+
+        function resetAnimation(startIndex = 0) {
+            clearInterval(animationInterval);
+            currentIndex = startIndex;
+            updateTimeline(currentIndex);
+            animationInterval = setInterval(animateTimeline, 3000);
+        }
+
+        createTimeline();
+        animationInterval = setInterval(animateTimeline, 3000);
+    </script>
+</body>
+
+</html>
