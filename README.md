@@ -1,5 +1,5 @@
 
-# IG-Drones Frontend Assesment
+# IG-Drones Frontend Assessment
 
 Creating a interactive & responsive time-line using HTML ,CSS ,Javascript
 
